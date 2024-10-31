@@ -13,8 +13,8 @@ class FlaconiCircleButton extends StatelessWidget {
       onPressed: onPressed,
       elevation: 0.0,
       constraints: BoxConstraints.tightFor(
-        width: size ?? 32,
-        height: size ?? 32,
+        width: size ?? 45,
+        height: size ?? 45,
       ),
       shape: const CircleBorder(
         side: BorderSide(

@@ -1,8 +1,11 @@
+import 'package:flaconi_weather/shared/di.dart';
 import 'package:flaconi_weather/theme/theme.dart';
 import 'package:flaconi_weather/weather/ui/weather_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DependencyInjector.inject();
   runApp(const MyApp());
 }
 
