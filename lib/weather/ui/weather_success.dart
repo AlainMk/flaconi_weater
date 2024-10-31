@@ -23,7 +23,7 @@ class SuccessWeatherContainer extends StatelessWidget {
           city: state.cityName ?? "Current Location",
           onTap: (v) {
             if (v.isEmpty) return;
-            context.read<ForecastBloc>().add(GetForecastByCity(v));
+            context.read<ForecastBloc>().add(GetForecastByCity(v, units: state.units));
           },
         ),
         const Gap(FlaconiSpacing.large),

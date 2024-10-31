@@ -1,3 +1,5 @@
+import 'package:flaconi_weather/theme/border_radius.dart';
+import 'package:flaconi_weather/theme/colors.dart';
 import 'package:flaconi_weather/theme/spacing.dart';
 import 'package:flaconi_weather/theme/utils.dart';
 import 'package:flaconi_weather/weather/ui/bloc/forecast_bloc.dart';
@@ -26,7 +28,10 @@ class WeatherScreen extends StatelessWidget {
                 children: [
                   FlaconiCircleButton(
                     onPressed: () {
-                      context.read<ForecastBloc>().add(const GetForecastByLocation());
+                      final units = context.read<ForecastBloc>().state is SuccessForecastState
+                          ? (context.read<ForecastBloc>().state as SuccessForecastState).units
+                          : WeatherUnit.metric;
+                      context.read<ForecastBloc>().add(GetForecastByLocation(units: units));
                     },
                     icon: CupertinoIcons.location_fill,
                   ),
@@ -36,7 +41,22 @@ class WeatherScreen extends StatelessWidget {
                   const Text('Weather'),
                   const Spacer(),
                   FlaconiCircleButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) {
+                          final units = context.read<ForecastBloc>().state is SuccessForecastState
+                              ? (context.read<ForecastBloc>().state as SuccessForecastState).units
+                              : WeatherUnit.metric;
+                          return EditUnitsWidget(
+                            selectedUnit: units,
+                            onUnitSelected: (unit) {
+                              context.read<ForecastBloc>().add(ChangeUnits(unit));
+                            },
+                          );
+                        },
+                      );
+                    },
                     icon: Icons.more_vert,
                   ),
                 ],
@@ -59,9 +79,9 @@ class WeatherScreen extends StatelessWidget {
                 return RefreshIndicator(
                   onRefresh: () async {
                     if (weatherState.cityName == null) {
-                      context.read<ForecastBloc>().add(const GetForecastByLocation());
+                      context.read<ForecastBloc>().add(GetForecastByLocation(units: weatherState.units));
                     } else {
-                      context.read<ForecastBloc>().add(GetForecastByCity(weatherState.cityName!));
+                      context.read<ForecastBloc>().add(GetForecastByCity(weatherState.cityName!, units: weatherState.units));
                     }
                   },
                   child: ListView(
@@ -77,6 +97,95 @@ class WeatherScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class EditUnitsWidget extends StatefulWidget {
+  const EditUnitsWidget({
+    super.key,
+    required this.onUnitSelected,
+    this.selectedUnit = WeatherUnit.metric,
+  });
+
+  final Function(WeatherUnit) onUnitSelected;
+  final WeatherUnit selectedUnit;
+
+  @override
+  State<EditUnitsWidget> createState() => _EditUnitsWidgetState();
+}
+
+class _EditUnitsWidgetState extends State<EditUnitsWidget> {
+  WeatherUnit _selectedUnit = WeatherUnit.metric;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedUnit = widget.selectedUnit;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(FlaconiSpacing.large),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Gap(FlaconiSpacing.large),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedUnit = WeatherUnit.metric;
+                    });
+                  },
+                  child: _buildSelector(context, 'Metric', isSelected: _selectedUnit == WeatherUnit.metric),
+                ),
+              ),
+              const Gap(FlaconiSpacing.large),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedUnit = WeatherUnit.imperial;
+                    });
+                  },
+                  child: _buildSelector(context, 'Imperial', isSelected: _selectedUnit == WeatherUnit.imperial),
+                ),
+              ),
+            ],
+          ),
+          const Gap(FlaconiSpacing.medium),
+          FlaconiCircleButton(
+            onPressed: () {
+              widget.onUnitSelected(_selectedUnit);
+              Navigator.pop(context);
+            },
+            icon: Icons.check,
+            size: 60,
+          ),
+          const Gap(FlaconiSpacing.medium),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSelector(BuildContext context, String units, {bool isSelected = false}) {
+    return Container(
+      height: 60,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(FlaconiSpacing.medium),
+      decoration: BoxDecoration(
+        color: isSelected ? FlaconiColors.primary : FlaconiColors.border.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(FlaconiBorderRadius.huge),
+      ),
+      child: Text(
+        units,
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: isSelected ? FlaconiColors.white : null),
       ),
     );
   }

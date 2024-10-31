@@ -22,10 +22,10 @@ class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
   ) async {
     try {
       emit(const LoadingForecastState());
-      final response = await _repository.getSixDayForecastByLocation();
+      final response = await _repository.getSixDayForecastByLocation(units: event.units.name);
       response.fold(
         (l) => emit(ErrorForecastState(message: l.error)),
-        (r) => emit(SuccessForecastState(r, r.first)),
+        (r) => emit(SuccessForecastState(r, r.first, units: event.units)),
       );
     } catch (e) {
       emit(ErrorForecastState(message: e.toString()));
@@ -38,10 +38,10 @@ class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
   ) async {
     try {
       emit(const LoadingForecastState());
-      final response = await _repository.getSixDayForecastByCity(event.cityName);
+      final response = await _repository.getSixDayForecastByCity(event.cityName, units: event.units.name);
       response.fold(
         (l) => emit(ErrorForecastState(message: l.error)),
-        (r) => emit(SuccessForecastState(r, r.first, cityName: event.cityName)),
+        (r) => emit(SuccessForecastState(r, r.first, cityName: event.cityName, units: event.units)),
       );
     } catch (e) {
       emit(ErrorForecastState(message: e.toString()));
@@ -60,11 +60,14 @@ class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
     Emitter<ForecastState> emit,
   ) async {
     try {
+      final cityName = state is SuccessForecastState ? (state as SuccessForecastState).cityName : null;
       emit(const LoadingForecastState());
-      final response = await _repository.getSixDayForecastByCity(event.cityName, units: event.units);
+      final response = cityName == null
+          ? await _repository.getSixDayForecastByLocation(units: event.units.name)
+          : await _repository.getSixDayForecastByCity(cityName, units: event.units.name);
       response.fold(
         (l) => emit(ErrorForecastState(message: l.error)),
-        (r) => emit(SuccessForecastState(r, r.first, cityName: event.cityName)),
+        (r) => emit(SuccessForecastState(r, r.first, units: event.units, cityName: cityName)),
       );
     } catch (e) {
       emit(ErrorForecastState(message: e.toString()));

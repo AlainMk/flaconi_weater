@@ -21,11 +21,12 @@ class ErrorForecastState extends ForecastState {
 }
 
 class SuccessForecastState extends ForecastState {
-  const SuccessForecastState(this._forecast, this._selectedForecast, {this.cityName});
+  const SuccessForecastState(this._forecast, this._selectedForecast, {this.cityName, this.units = WeatherUnit.metric});
 
   final List<DailyAverage> _forecast;
   final DailyAverage _selectedForecast;
   final String? cityName;
+  final WeatherUnit units;
 
   List<ForecastItem> get forecastItems {
     return _forecast.map((e) => ForecastItem(e)).toList();
@@ -34,17 +35,19 @@ class SuccessForecastState extends ForecastState {
   SelectedForecastDetails get selectedForecastDetails => SelectedForecastDetails(_selectedForecast);
 
   @override
-  List<Object?> get props => [_forecast, _selectedForecast, cityName];
+  List<Object?> get props => [_forecast, _selectedForecast, cityName, units];
 
   SuccessForecastState copyWith({
     List<DailyAverage>? forecast,
     DailyAverage? selectedForecast,
     String? cityName,
+    WeatherUnit? units,
   }) {
     return SuccessForecastState(
       forecast ?? _forecast,
       selectedForecast ?? _selectedForecast,
       cityName: cityName ?? this.cityName,
+      units: units ?? this.units,
     );
   }
 }
@@ -110,3 +113,5 @@ class ForecastItem {
     return '${min.round()}° / ${max.round()}°';
   }
 }
+
+enum WeatherUnit { metric, imperial }

@@ -5,19 +5,22 @@ sealed class ForecastEvent extends Equatable {
 }
 
 class GetForecastByLocation extends ForecastEvent {
-  const GetForecastByLocation();
+  const GetForecastByLocation({this.units = WeatherUnit.metric});
+
+  final WeatherUnit units;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [units];
 }
 
 class GetForecastByCity extends ForecastEvent {
-  const GetForecastByCity(this.cityName);
+  const GetForecastByCity(this.cityName, {this.units = WeatherUnit.metric});
 
   final String cityName;
+  final WeatherUnit units;
 
   @override
-  List<Object?> get props => [cityName];
+  List<Object?> get props => [cityName, units];
 }
 
 class SelectForecastItem extends ForecastEvent {
@@ -30,11 +33,10 @@ class SelectForecastItem extends ForecastEvent {
 }
 
 class ChangeUnits extends ForecastEvent {
-  const ChangeUnits(this.units, this.cityName);
+  const ChangeUnits(this.units);
 
-  final String units;
-  final String cityName;
+  final WeatherUnit units;
 
   @override
-  List<Object?> get props => [units, cityName];
+  List<Object?> get props => [units];
 }
