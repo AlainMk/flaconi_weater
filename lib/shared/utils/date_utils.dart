@@ -11,7 +11,7 @@ extension DateFormatter on DateTime {
     } else if (year == tomorrow.year && month == tomorrow.month && day == tomorrow.day) {
       return "Tomorrow";
     } else {
-      return DateFormat('EEEE').format(this); // Returns day of the week
+      return DateFormat('EEEE').format(this);
     }
   }
 
