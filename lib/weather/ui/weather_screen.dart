@@ -1,9 +1,8 @@
 import 'package:flaconi_weather/theme/spacing.dart';
 import 'package:flaconi_weather/theme/utils.dart';
-import 'package:flaconi_weather/weather/ui/blocs/daily/daily_weather_bloc.dart';
-import 'package:flaconi_weather/weather/ui/blocs/forecast/forecast_bloc.dart';
+import 'package:flaconi_weather/weather/ui/bloc/forecast_bloc.dart';
 import 'package:flaconi_weather/weather/ui/error_screen.dart';
-import 'package:flaconi_weather/weather/ui/next_forecast.dart';
+import 'package:flaconi_weather/weather/ui/forecast_list.dart';
 import 'package:flaconi_weather/weather/ui/weather_success.dart';
 import 'package:flaconi_weather/widgets/circle_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,11 +15,8 @@ class WeatherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => DailyWeatherBloc()..add(const GetDailyWeatherByLocation())),
-        BlocProvider(create: (context) => ForecastBloc()),
-      ],
+    return BlocProvider(
+      create: (context) => ForecastBloc()..add(const GetForecastByLocation()),
       child: Builder(
         builder: (context) {
           return Scaffold(
@@ -30,7 +26,7 @@ class WeatherScreen extends StatelessWidget {
                 children: [
                   FlaconiCircleButton(
                     onPressed: () {
-                      context.read<DailyWeatherBloc>().add(const GetDailyWeatherByLocation());
+                      context.read<ForecastBloc>().add(const GetForecastByLocation());
                     },
                     icon: CupertinoIcons.location_fill,
                   ),
@@ -46,29 +42,33 @@ class WeatherScreen extends StatelessWidget {
                 ],
               ),
             ),
-            body: BlocConsumer<DailyWeatherBloc, DailyWeatherState>(
+            body: BlocConsumer<ForecastBloc, ForecastState>(
               listener: (context, state) {
-                if (state is ErrorDailyWeatherState) {
+                if (state is ErrorForecastState) {
                   showErrorSnackBar(context, state.message);
-                } else if (state is SuccessDailyWeatherState) {
-                  final cityName = state.cityName;
-                  context.read<ForecastBloc>().add(GetForecastByCity(cityName));
                 }
               },
               builder: (context, state) {
-                if (state is LoadingDailyWeatherState) {
+                if (state is LoadingForecastState) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (state is ErrorDailyWeatherState) {
+                } else if (state is ErrorForecastState) {
                   return WeatherErrorScreen(message: state.message);
                 }
 
-                final weatherState = state as SuccessDailyWeatherState;
-                return SingleChildScrollView(
-                  child: Column(
+                final weatherState = state as SuccessForecastState;
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    if (weatherState.cityName == null) {
+                      context.read<ForecastBloc>().add(const GetForecastByLocation());
+                    } else {
+                      context.read<ForecastBloc>().add(GetForecastByCity(weatherState.cityName!));
+                    }
+                  },
+                  child: ListView(
                     children: [
-                      SuccessWeatherContainer(weatherState: weatherState),
-                      const Gap(FlaconiSpacing.largeXxl),
-                      const NextForecastContent(),
+                      SuccessWeatherContainer(state: weatherState),
+                      const Gap(FlaconiSpacing.largeXl),
+                      const ForecastListContent(),
                       const Gap(FlaconiSpacing.largeXl),
                     ],
                   ),

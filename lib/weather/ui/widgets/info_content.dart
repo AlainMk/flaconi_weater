@@ -32,6 +32,11 @@ class WeatherInfoContainer extends StatelessWidget {
             blurRadius: 10,
             offset: const Offset(0, 8),
           ),
+          BoxShadow(
+            color: FlaconiColors.border.withOpacity(0.1),
+            blurRadius: 5,
+            offset: const Offset(0, -5),
+          ),
         ],
       ),
       child: Column(

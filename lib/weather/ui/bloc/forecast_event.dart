@@ -20,6 +20,15 @@ class GetForecastByCity extends ForecastEvent {
   List<Object?> get props => [cityName];
 }
 
+class SelectForecastItem extends ForecastEvent {
+  final DailyAverage forecast;
+
+  const SelectForecastItem(this.forecast);
+
+  @override
+  List<Object?> get props => [forecast];
+}
+
 class ChangeUnits extends ForecastEvent {
   const ChangeUnits(this.units, this.cityName);
 

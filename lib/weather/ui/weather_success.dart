@@ -1,62 +1,67 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flaconi_weather/theme/colors.dart';
 import 'package:flaconi_weather/theme/spacing.dart';
-import 'package:flaconi_weather/weather/ui/blocs/daily/daily_weather_bloc.dart';
-import 'package:flaconi_weather/weather/ui/city_content.dart';
-import 'package:flaconi_weather/weather/ui/info_content.dart';
+import 'package:flaconi_weather/weather/ui/bloc/forecast_bloc.dart';
+import 'package:flaconi_weather/weather/ui/widgets/city_content.dart';
+import 'package:flaconi_weather/weather/ui/widgets/info_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class SuccessWeatherContainer extends StatelessWidget {
-  const SuccessWeatherContainer({super.key, required this.weatherState});
+  const SuccessWeatherContainer({super.key, required this.state});
 
-  final SuccessDailyWeatherState weatherState;
+  final SuccessForecastState state;
 
   @override
   Widget build(BuildContext context) {
+    final details = state.selectedForecastDetails;
     return Column(
       children: [
-        const Gap(FlaconiSpacing.normal),
+        const Gap(FlaconiSpacing.smallMedium),
         WeatherCityContainer(
-          city: weatherState.cityName,
-          onTap: () {},
+          city: state.cityName ?? "Current Location",
+          onTap: (v) {
+            if (v.isEmpty) return;
+            context.read<ForecastBloc>().add(GetForecastByCity(v));
+          },
         ),
-        const Gap(FlaconiSpacing.largeL),
+        const Gap(FlaconiSpacing.large),
         Text(
-          weatherState.date,
+          details.convertedDate,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         CachedNetworkImage(
-          imageUrl: weatherState.icon,
-          height: 200,
+          imageUrl: details.icon,
+          height: 180,
           fit: BoxFit.cover,
         ),
-        const Gap(FlaconiSpacing.largeL),
+        const Gap(FlaconiSpacing.large),
         Text(
-          weatherState.temperature,
+          details.temperature,
           style: Theme.of(context).textTheme.displayLarge,
         ),
         Text(
-          weatherState.weatherCondition,
+          details.weatherCondition,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(color: FlaconiColors.lightGray),
         ),
-        const Gap(FlaconiSpacing.largeXl),
+        const Gap(FlaconiSpacing.largeL),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             WeatherInfoContainer(
               title: 'Wind',
-              value: weatherState.windSpeed,
+              value: details.windSpeed,
               icon: Icons.air,
             ),
             WeatherInfoContainer(
               title: 'Humidity',
-              value: weatherState.humidity,
+              value: details.humidity,
               icon: Icons.water,
             ),
             WeatherInfoContainer(
               title: 'Pressure',
-              value: weatherState.pressure,
+              value: details.pressure,
               icon: Icons.speed,
             ),
           ],

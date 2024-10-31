@@ -15,7 +15,11 @@ class WeatherApi {
     return _dio.get(_weatherPath, queryParameters: {'lat': lat, 'lon': lon, 'units': units});
   }
 
-  Future<Response> getSevenDayForecastByCity(String city, {String units = 'metric'}) async {
+  Future<Response> getSixDayForecastByCity(String city, {String units = 'metric'}) async {
     return _dio.get(_forecastPath, queryParameters: {'q': city, 'units': units});
+  }
+
+  Future<Response> getSixDayForecastByLocation(double lat, double lon, {String units = 'metric'}) async {
+    return _dio.get(_forecastPath, queryParameters: {'lat': lat, 'lon': lon, 'units': units});
   }
 }

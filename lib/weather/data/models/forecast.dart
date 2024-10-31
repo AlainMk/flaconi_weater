@@ -2,11 +2,19 @@ class LocalForecast {
   final DateTime dateTime;
   final double temperature;
   final String icon;
+  final String weatherCondition;
+  final double windSpeed;
+  final double pressure;
+  final double humidity;
 
   LocalForecast({
     required this.dateTime,
     required this.temperature,
     required this.icon,
+    required this.weatherCondition,
+    required this.windSpeed,
+    required this.pressure,
+    required this.humidity,
   });
 }
 
@@ -16,20 +24,24 @@ extension DailyForecastExtension on DailyForecast {
       dateTime: DateTime.fromMillisecondsSinceEpoch(dt! * 1000),
       temperature: main!.temp!,
       icon: weather!.first.icon!,
+      weatherCondition: weather!.first.main!,
+      windSpeed: wind!.speed!,
+      pressure: main!.pressure!,
+      humidity: main!.humidity!,
     );
   }
 }
 
-class Forecast {
+class ForecastResponse {
   String? cod;
   int? message;
   int? cnt;
   List<DailyForecast>? list;
   City? city;
 
-  Forecast({this.cod, this.message, this.cnt, this.list, this.city});
+  ForecastResponse({this.cod, this.message, this.cnt, this.list, this.city});
 
-  Forecast.fromJson(Map<String, dynamic> json) {
+  ForecastResponse.fromJson(Map<String, dynamic> json) {
     cod = json['cod'];
     message = json['message'];
     cnt = json['cnt'];
@@ -62,11 +74,15 @@ class DailyForecast {
   Main? main;
   List<Weather>? weather;
   Clouds? clouds;
+  Wind? wind;
   int? visibility;
+  double? pop;
   Sys? sys;
   String? dtTxt;
+  Rain? rain;
 
-  DailyForecast({this.dt, this.main, this.weather, this.clouds, this.visibility, this.sys, this.dtTxt});
+  DailyForecast(
+      {this.dt, this.main, this.weather, this.clouds, this.wind, this.visibility, this.pop, this.sys, this.dtTxt, this.rain});
 
   DailyForecast.fromJson(Map<String, dynamic> json) {
     dt = json['dt'];
@@ -78,9 +94,12 @@ class DailyForecast {
       });
     }
     clouds = json['clouds'] != null ? Clouds.fromJson(json['clouds']) : null;
+    wind = json['wind'] != null ? Wind.fromJson(json['wind']) : null;
     visibility = json['visibility'];
+    pop = json['pop'].toDouble();
     sys = json['sys'] != null ? Sys.fromJson(json['sys']) : null;
     dtTxt = json['dt_txt'];
+    rain = json['rain'] != null ? Rain.fromJson(json['rain']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -95,60 +114,52 @@ class DailyForecast {
     if (clouds != null) {
       data['clouds'] = clouds!.toJson();
     }
+    if (wind != null) {
+      data['wind'] = wind!.toJson();
+    }
     data['visibility'] = visibility;
+    data['pop'] = pop;
     if (sys != null) {
       data['sys'] = sys!.toJson();
     }
     data['dt_txt'] = dtTxt;
+    if (rain != null) {
+      data['rain'] = rain!.toJson();
+    }
     return data;
   }
 }
 
 class Main {
   double? temp;
-  double? feelsLike;
   double? tempMin;
   double? tempMax;
-  int? pressure;
-  int? seaLevel;
-  int? grndLevel;
-  int? humidity;
-  double? tempKf;
+  double? pressure;
+  double? humidity;
 
-  Main(
-      {this.temp,
-      this.feelsLike,
-      this.tempMin,
-      this.tempMax,
-      this.pressure,
-      this.seaLevel,
-      this.grndLevel,
-      this.humidity,
-      this.tempKf});
+  Main({
+    this.temp,
+    this.tempMin,
+    this.tempMax,
+    this.pressure,
+    this.humidity,
+  });
 
   Main.fromJson(Map<String, dynamic> json) {
-    temp = json['temp'];
-    feelsLike = json['feels_like'];
-    tempMin = json['temp_min'];
-    tempMax = json['temp_max'];
-    pressure = json['pressure'];
-    seaLevel = json['sea_level'];
-    grndLevel = json['grnd_level'];
-    humidity = json['humidity'];
-    tempKf = json['temp_kf'].toDouble();
+    temp = json['temp'].toDouble();
+    tempMin = json['temp_min'].toDouble();
+    tempMax = json['temp_max'].toDouble();
+    pressure = json['pressure'].toDouble();
+    humidity = json['humidity'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['temp'] = temp;
-    data['feels_like'] = feelsLike;
     data['temp_min'] = tempMin;
     data['temp_max'] = tempMax;
     data['pressure'] = pressure;
-    data['sea_level'] = seaLevel;
-    data['grnd_level'] = grndLevel;
     data['humidity'] = humidity;
-    data['temp_kf'] = tempKf;
     return data;
   }
 }
@@ -194,18 +205,21 @@ class Clouds {
   }
 }
 
-class Rain {
-  double? d3h;
+class Wind {
+  double? speed;
+  double? gust;
 
-  Rain({this.d3h});
+  Wind({this.speed, this.gust});
 
-  Rain.fromJson(Map<String, dynamic> json) {
-    d3h = json['3h'];
+  Wind.fromJson(Map<String, dynamic> json) {
+    speed = json['speed'].toDouble();
+    gust = json['gust'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['3h'] = d3h;
+    data['speed'] = speed;
+    data['gust'] = gust;
     return data;
   }
 }
@@ -222,6 +236,22 @@ class Sys {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['pod'] = pod;
+    return data;
+  }
+}
+
+class Rain {
+  double? d3h;
+
+  Rain({this.d3h});
+
+  Rain.fromJson(Map<String, dynamic> json) {
+    d3h = json['3h'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['3h'] = d3h;
     return data;
   }
 }

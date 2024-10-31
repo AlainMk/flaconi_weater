@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class FlaconiColors {
   const FlaconiColors._();
-  static const primary = Color(0xFF63BA01);
-  static const secondary = Color(0xFF63BA01);
+  static const primary = Color(0xFF3893F5);
+  static const secondary = Color(0xFFFE6C4B);
 
   static const Color grey = Color(0xFF3A5160);
   static const Color darkGrey = Color(0xFF313A44);
