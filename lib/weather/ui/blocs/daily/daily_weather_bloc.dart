@@ -9,8 +9,7 @@ part 'daily_weather_state.dart';
 
 class DailyWeatherBloc extends Bloc<DailyWeatherEvent, DailyWeatherState> {
   final WeatherRepository _repository = WeatherRepository();
-  final String units;
-  DailyWeatherBloc({this.units = "metric"}) : super(const LoadingDailyWeatherState()) {
+  DailyWeatherBloc() : super(const LoadingDailyWeatherState()) {
     on<GetDailyWeatherByLocation>(_getDailyWeatherByLocation);
     on<GetDailyWeatherByCity>(_getDailyWeatherByCity);
   }
@@ -21,7 +20,7 @@ class DailyWeatherBloc extends Bloc<DailyWeatherEvent, DailyWeatherState> {
   ) async {
     try {
       emit(const LoadingDailyWeatherState());
-      final response = await _repository.getWeatherByLocation(units: units);
+      final response = await _repository.getWeatherByLocation();
       response.fold(
         (l) => emit(ErrorDailyWeatherState(message: l.error)),
         (r) => emit(SuccessDailyWeatherState(r)),
@@ -37,7 +36,23 @@ class DailyWeatherBloc extends Bloc<DailyWeatherEvent, DailyWeatherState> {
   ) async {
     try {
       emit(const LoadingDailyWeatherState());
-      final response = await _repository.getWeatherByCity(event.cityName, units: units);
+      final response = await _repository.getWeatherByCity(event.cityName);
+      response.fold(
+        (l) => emit(ErrorDailyWeatherState(message: l.error)),
+        (r) => emit(SuccessDailyWeatherState(r)),
+      );
+    } catch (e) {
+      emit(ErrorDailyWeatherState(message: e.toString()));
+    }
+  }
+
+  Future<void> _changeUnits(
+    ChangeUnits event,
+    Emitter<DailyWeatherState> emit,
+  ) async {
+    try {
+      emit(const LoadingDailyWeatherState());
+      final response = await _repository.getWeatherByCity(event.cityName, units: event.units);
       response.fold(
         (l) => emit(ErrorDailyWeatherState(message: l.error)),
         (r) => emit(SuccessDailyWeatherState(r)),

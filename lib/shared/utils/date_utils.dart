@@ -14,4 +14,8 @@ extension DateFormatter on DateTime {
       return DateFormat('EEEE').format(this); // Returns day of the week
     }
   }
+
+  String get shortDayOfWeek {
+    return DateFormat('EEE').format(this);
+  }
 }

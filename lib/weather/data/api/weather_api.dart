@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class WeatherApi {
   static const String _weatherPath = '/weather';
-  static const String _forecastPath = '/forecast/daily';
+  static const String _forecastPath = '/forecast';
   final Dio _dio;
 
   WeatherApi(this._dio);
@@ -16,10 +16,6 @@ class WeatherApi {
   }
 
   Future<Response> getSevenDayForecastByCity(String city, {String units = 'metric'}) async {
-    return _dio.get(_forecastPath, queryParameters: {'q': city, 'units': units, 'cnt': '7'});
-  }
-
-  Future<Response> getSevenDayForecastByLocation(double lat, double lon, {String units = 'metric'}) async {
-    return _dio.get(_forecastPath, queryParameters: {'lat': lat, 'lon': lon, 'units': units, 'cnt': '7'});
+    return _dio.get(_forecastPath, queryParameters: {'q': city, 'units': units});
   }
 }

@@ -21,10 +21,11 @@ class GetDailyWeatherByCity extends DailyWeatherEvent {
 }
 
 class ChangeUnits extends DailyWeatherEvent {
-  const ChangeUnits(this.units);
+  const ChangeUnits(this.units, this.cityName);
 
   final String units;
+  final String cityName;
 
   @override
-  List<Object?> get props => [units];
+  List<Object?> get props => [units, cityName];
 }
