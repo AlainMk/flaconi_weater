@@ -7,6 +7,19 @@ class FlaconiFonts {
   const FlaconiFonts._();
 
   static TextTheme textTheme = TextTheme(
+    displayLarge: GoogleFonts.poppins(
+      fontWeight: FontWeight.w700,
+      color: FlaconiColors.darkerText,
+      height: 0.5,
+    ),
+    displayMedium: GoogleFonts.poppins(
+      fontWeight: FontWeight.w700,
+      color: FlaconiColors.darkerText,
+    ),
+    displaySmall: GoogleFonts.poppins(
+      fontWeight: FontWeight.w600,
+      color: FlaconiColors.darkerText,
+    ),
     headlineLarge: GoogleFonts.poppins(
       fontWeight: FontWeight.w400,
       color: FlaconiColors.darkerText,

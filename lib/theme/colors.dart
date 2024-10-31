@@ -13,6 +13,7 @@ class FlaconiColors {
 
   static const lightGray = Color(0xFF9B9EA5);
   static const border = Color(0xFFE2E8F0);
+  static const background = Color(0xFFF4F7F9);
 
   static const red = Color(0xFFEE4B2E);
 

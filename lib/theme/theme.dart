@@ -11,12 +11,15 @@ class FlaconiTheme {
         primary: FlaconiColors.primary,
         secondary: FlaconiColors.secondary,
         error: FlaconiColors.red,
+        surface: FlaconiColors.white,
       ),
       primaryColor: FlaconiColors.primary,
       appBarTheme: const AppBarTheme(
         backgroundColor: FlaconiColors.white,
         elevation: 0,
+        foregroundColor: FlaconiColors.darkerText,
       ),
+      scaffoldBackgroundColor: FlaconiColors.white,
       textTheme: FlaconiFonts.textTheme,
       useMaterial3: false,
     );
