@@ -61,7 +61,7 @@ class SelectedForecastDetails {
 
   bool get isToday => _forecast.date.isAtSameMomentAs(DateTime.now());
 
-  String get weatherCondition => _forecast.weatherCondition;
+  String get weatherCondition => isToday ? _forecast.weatherCondition : _forecast.commonWeatherCondition;
 
   DateTime get date => _forecast.date;
 
@@ -73,7 +73,7 @@ class SelectedForecastDetails {
   }
 
   String get icon {
-    final icon = _forecast.icon;
+    final icon = isToday ? _forecast.icon : _forecast.commonIcon;
     return 'http://openweathermap.org/img/wn/$icon@2x.png';
   }
 
@@ -108,7 +108,7 @@ class ForecastItem {
   }
 
   String get icon {
-    final icon = _dailyForecast.icon;
+    final icon = _dailyForecast.commonIcon;
     return 'http://openweathermap.org/img/wn/$icon@2x.png';
   }
 

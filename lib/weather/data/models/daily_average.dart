@@ -12,6 +12,8 @@ class DailyAverage {
   final double averageWindSpeed;
   final double averagePressure;
   final double averageHumidity;
+  final String commonWeatherCondition;
+  final String commonIcon;
 
   DailyAverage({
     required this.date,
@@ -27,5 +29,7 @@ class DailyAverage {
     required this.averageWindSpeed,
     required this.averagePressure,
     required this.averageHumidity,
+    required this.commonWeatherCondition,
+    required this.commonIcon,
   });
 }

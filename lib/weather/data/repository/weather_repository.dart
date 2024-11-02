@@ -75,6 +75,8 @@ class WeatherRepository extends BaseRepository {
       double currentSpeed = dailyForecasts.first.windSpeed;
       double currentPressure = dailyForecasts.first.pressure;
       double currentHumidity = dailyForecasts.first.humidity;
+      String currentIcon = dailyForecasts.first.icon;
+      String currentWeatherCondition = dailyForecasts.first.weatherCondition;
 
       double minTemp = dailyForecasts.map((f) => f.temperature).reduce(min);
       double maxTemp = dailyForecasts.map((f) => f.temperature).reduce(max);
@@ -99,8 +101,8 @@ class WeatherRepository extends BaseRepository {
         minTemperature: minTemp,
         maxTemperature: maxTemp,
         temperature: currentTemp,
-        icon: mostCommonIcon,
-        weatherCondition: mostCommonWeatherCondition,
+        icon: currentIcon,
+        weatherCondition: currentWeatherCondition,
         windSpeed: currentSpeed,
         pressure: currentPressure,
         humidity: currentHumidity,
@@ -108,6 +110,8 @@ class WeatherRepository extends BaseRepository {
         averageWindSpeed: avgSpeed,
         averagePressure: avgPressure,
         averageHumidity: avgHumidity,
+        commonWeatherCondition: mostCommonWeatherCondition,
+        commonIcon: mostCommonIcon,
       ));
     });
 
