@@ -1,4 +1,4 @@
-# flaconi_weather
+# My Awesome Weather
 
 A new Flutter project.
 
