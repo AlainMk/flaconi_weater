@@ -59,13 +59,18 @@ class SelectedForecastDetails {
 
   DailyAverage get item => _forecast;
 
+  bool get isToday => _forecast.date.isAtSameMomentAs(DateTime.now());
+
   String get weatherCondition => _forecast.weatherCondition;
 
   DateTime get date => _forecast.date;
 
   String get convertedDate => _forecast.date.dayOfWeekOrRelative;
 
-  String get temperature => '${_forecast.temperature.round()}°';
+  String get temperature {
+    final temperature = isToday ? _forecast.temperature : _forecast.averageTemperature;
+    return '${temperature.round()}°';
+  }
 
   String get icon {
     final icon = _forecast.icon;
@@ -73,17 +78,17 @@ class SelectedForecastDetails {
   }
 
   String get windSpeed {
-    final speed = _forecast.windSpeed;
+    final speed = isToday ? _forecast.windSpeed : _forecast.averageWindSpeed;
     return '${speed.round()} m/s';
   }
 
   String get humidity {
-    final humidity = _forecast.humidity;
+    final humidity = isToday ? _forecast.humidity : _forecast.averageHumidity;
     return '${humidity.round()}%';
   }
 
   String get pressure {
-    final pressure = _forecast.pressure;
+    final pressure = isToday ? _forecast.pressure : _forecast.averagePressure;
     return '${pressure.round()} hPa';
   }
 }

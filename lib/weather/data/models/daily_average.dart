@@ -8,6 +8,10 @@ class DailyAverage {
   final double windSpeed;
   final double pressure;
   final double humidity;
+  final double averageTemperature;
+  final double averageWindSpeed;
+  final double averagePressure;
+  final double averageHumidity;
 
   DailyAverage({
     required this.date,
@@ -19,5 +23,9 @@ class DailyAverage {
     required this.windSpeed,
     required this.pressure,
     required this.humidity,
+    required this.averageTemperature,
+    required this.averageWindSpeed,
+    required this.averagePressure,
+    required this.averageHumidity,
   });
 }

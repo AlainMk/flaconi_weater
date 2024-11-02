@@ -71,6 +71,11 @@ class WeatherRepository extends BaseRepository {
       double avgPressure = dailyForecasts.map((f) => f.pressure).reduce((a, b) => a + b) / dailyForecasts.length;
       double avgHumidity = dailyForecasts.map((f) => f.humidity).reduce((a, b) => a + b) / dailyForecasts.length;
 
+      double currentTemp = dailyForecasts.first.temperature;
+      double currentSpeed = dailyForecasts.first.windSpeed;
+      double currentPressure = dailyForecasts.first.pressure;
+      double currentHumidity = dailyForecasts.first.humidity;
+
       double minTemp = dailyForecasts.map((f) => f.temperature).reduce(min);
       double maxTemp = dailyForecasts.map((f) => f.temperature).reduce(max);
 
@@ -93,12 +98,16 @@ class WeatherRepository extends BaseRepository {
         date: DateFormat('yyyy-MM-dd').parse(day),
         minTemperature: minTemp,
         maxTemperature: maxTemp,
-        temperature: avgTemp,
+        temperature: currentTemp,
         icon: mostCommonIcon,
         weatherCondition: mostCommonWeatherCondition,
-        windSpeed: avgSpeed,
-        pressure: avgPressure,
-        humidity: avgHumidity,
+        windSpeed: currentSpeed,
+        pressure: currentPressure,
+        humidity: currentHumidity,
+        averageTemperature: avgTemp,
+        averageWindSpeed: avgSpeed,
+        averagePressure: avgPressure,
+        averageHumidity: avgHumidity,
       ));
     });
 
